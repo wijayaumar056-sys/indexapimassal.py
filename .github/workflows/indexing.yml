@@ -1,27 +1,30 @@
-name: Bulk Indexing Google
+name: Bulk Indexing Google Search Console
 
 on:
-  workflow_dispatch: # Bisa dijalankan manual
+  workflow_dispatch: # Memungkinkan kamu menjalankan script secara manual dari tab "Actions"
   schedule:
-    - cron: '0 0 * * *' # Jalan otomatis setiap jam 00:00 UTC
+    - cron: '0 0 * * *' # Berjalan otomatis setiap jam 00:00 UTC (jam 7 pagi WIB)
 
 jobs:
-  build:
+  run-indexing:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.11'
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: |
-          pip install google-api-python-client google-auth httplib2
+          python -m pip install --upgrade pip
+          pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
 
       - name: Run Indexing Script
         env:
+          # Pastikan kamu sudah memasukkan isi JSON Service Account ke GitHub Secrets dengan nama GOOGLE_CREDS
           GOOGLE_CREDS: ${{ secrets.GOOGLE_CREDS }}
         run: python script.py
