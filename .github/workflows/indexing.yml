@@ -1,0 +1,27 @@
+name: Bulk Indexing Google
+
+on:
+  workflow_dispatch: # Bisa dijalankan manual
+  schedule:
+    - cron: '0 0 * * *' # Jalan otomatis setiap jam 00:00 UTC
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install google-api-python-client google-auth httplib2
+
+      - name: Run Indexing Script
+        env:
+          GOOGLE_CREDS: ${{ secrets.GOOGLE_CREDS }}
+        run: python script.py
